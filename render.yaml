@@ -1,0 +1,15 @@
+# Configuración para despliegue en Render
+# https://render.com/docs/yaml
+services:
+  - type: web
+    name: innovasoft-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      # Configura estas variables en el dashboard de Render:
+      # - MONGO_URI: Tu URI de MongoDB Atlas
+      # - DB_NAME: Nombre de tu base de datos
+      # - INNOVASOFT_URL: URL de la API de Innovasoft

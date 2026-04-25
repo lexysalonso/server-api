@@ -1,0 +1,23 @@
+# Configuración de la aplicación
+
+app:
+  name: "Innovasoft API Local"
+  version: "1.0.0"
+  environment: "development"
+  host: "0.0.0.0"
+  port: 8000
+
+# Configuración de MongoDB
+database:
+  mongo_uri: "mongodb+srv://admin:L3xy5931026@innovasofpythonpruebate.mnxjcdo.mongodb.net/?retryWrites=true&w=majority&appName=innovasofpythonpruebatecnica"
+  db_name: "innovasofpythonpruebatecnica"
+
+# Configuración de la API de Innovasoft
+innovasoft:
+  base_url: "https://pruebareactjs.test-class.com/Api"
+  timeout: 30
+
+# Configuración de JWT
+jwt:
+  secret_key: "innovasoft_secret_key_change_in_production"
+  algorithm: "HS256"

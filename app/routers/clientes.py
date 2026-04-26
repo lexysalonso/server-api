@@ -1,11 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Header
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from datetime import datetime
-from app.models.schemas import (
-    ClienteCreate,
-    ClienteUpdate,
-    ClienteListadoRequest,
-)
+from app.models.schemas import ClienteCreate, ClienteUpdate, ClienteListadoRequest
 from app.services.innovasoft import innovasoft_service
 from app.services.database import get_sesiones_collection, get_operaciones_collection
 
@@ -42,18 +38,6 @@ def registrar_operacion(accion: str, username: str, cliente_id: str, resultado: 
     })
 
 
-@router.get("/")
-async def list_clientes(session: dict = Depends(get_current_session)):
-    try:
-        token = session.get("token")
-        userid = session.get("userid")
-        clientes = await innovasoft_service.list_clientes("", "", userid, token)
-        return clientes if isinstance(clientes, list) else []
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/Listado")
 @router.post("/Listado")
 async def listado_clientes(request: ClienteListadoRequest = None, session: dict = Depends(get_current_session)):
     try:
@@ -69,7 +53,6 @@ async def listado_clientes(request: ClienteListadoRequest = None, session: dict 
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{cliente_id}")
 @router.get("/Obtener/{cliente_id}")
 async def get_cliente(cliente_id: str, session: dict = Depends(get_current_session)):
     try:
@@ -82,7 +65,6 @@ async def get_cliente(cliente_id: str, session: dict = Depends(get_current_sessi
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.post("/")
 @router.post("/Crear")
 async def create_cliente(cliente: ClienteCreate, session: dict = Depends(get_current_session)):
     try:
@@ -96,7 +78,6 @@ async def create_cliente(cliente: ClienteCreate, session: dict = Depends(get_cur
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.put("/{cliente_id}")
 @router.post("/Actualizar")
 async def update_cliente(
     cliente_id: str = None,
@@ -120,8 +101,11 @@ async def update_cliente(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete("/{cliente_id}")
-async def delete_cliente(cliente_id: str, session: dict = Depends(get_current_session)):
+@router.delete("/Eliminar/{cliente_id}")
+async def delete_cliente(
+    cliente_id: str, 
+    session: dict = Depends(get_current_session)
+):
     try:
         token = session.get("token")
         username = session.get("username")

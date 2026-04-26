@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 from app.models.schemas import LoginRequest, LoginResponse, RegisterRequest, RegistroResponse
 from app.services.innovasoft import innovasoft_service
-from app.services.database import get_sesiones_collection, get_operaciones_collection
+from app.services.database import get_sesiones_collection
 
 router = APIRouter(tags=["Autenticacion"])
 
@@ -29,22 +29,14 @@ async def get_current_session(authorization: Optional[str] = Depends(get_token_f
 
 @router.post("/login", response_model=LoginResponse)
 async def login(request: LoginRequest):
-    import logging
-    logger = logging.getLogger(__name__)
-    
     try:
-        logger.info(f"Login attempt for user: {request.username}")
         response = await innovasoft_service.login(request.username, request.password)
-        logger.info(f"Innovasoft response: {response}")
         
         token = response.get("token")
         userid = response.get("userid")
         username = response.get("username") or response.get("userName")
         
-        logger.info(f"Token: {token}, UserID: {userid}, Username: {username}")
-        
         if not token or not userid:
-            logger.warning("Invalid credentials - no token or userid")
             return LoginResponse(token="", userid="", username="")
         
         sesiones = get_sesiones_collection()
@@ -58,7 +50,6 @@ async def login(request: LoginRequest):
         return LoginResponse(token=token, userid=userid, username=username)
     
     except Exception as e:
-        logger.error(f"Login error: {e}")
         return LoginResponse(token="", userid="", username="")
 
 
@@ -84,36 +75,9 @@ async def register(request: RegisterRequest):
         if "password" in error_msg or "weak" in error_msg or "required" in error_msg or "invalid" in error_msg:
             return RegistroResponse(
                 status="Error",
-                message="La contraseña no cumple los requisitos. Mínimo 8 caracteres, con mayúsculas, minúsculas y números."
-            )
-        if "email" in error_msg or "exists" in error_msg:
-            return RegistroResponse(
-                status="Error",
-                message="El correo electrónico ya está registrado."
+                message="La contraseña no cumple los requisitos."
             )
         return RegistroResponse(
             status="Error",
-            message="Error al registrar. Verifica los datos ingresados."
+            message="Error al registrar. Verifica los datos."
         )
-
-
-@router.post("/logout")
-async def logout(authorization: Optional[str] = Header(None)):
-    if authorization and authorization.startswith("Bearer "):
-        token = authorization[7:]
-        
-        sesiones = get_sesiones_collection()
-        sesiones.delete_many({"token": token})
-        
-        return {"message": "Sesión cerrada exitosamente"}
-    
-    return {"message": "No había sesión activa"}
-
-
-@router.get("/verify")
-async def verify_session(session: dict = Depends(get_current_session)):
-    return {
-        "authenticated": True,
-        "username": session.get("username"),
-        "userid": session.get("userid"),
-    }

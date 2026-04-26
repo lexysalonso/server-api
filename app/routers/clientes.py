@@ -70,6 +70,7 @@ async def listado_clientes(request: ClienteListadoRequest = None, session: dict 
 
 
 @router.get("/{cliente_id}")
+@router.get("/Obtener/{cliente_id}")
 async def get_cliente(cliente_id: str, session: dict = Depends(get_current_session)):
     try:
         token = session.get("token")

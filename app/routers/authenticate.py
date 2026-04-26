@@ -5,7 +5,7 @@ from app.models.schemas import LoginRequest, LoginResponse, RegisterRequest, Reg
 from app.services.innovasoft import innovasoft_service
 from app.services.database import get_sesiones_collection, get_operaciones_collection
 
-router = APIRouter(prefix="/api/Authenticate", tags=["Authenticate"])
+router = APIRouter(tags=["Autenticacion"])
 
 
 def get_token_from_header(authorization: Optional[str] = Header(None)) -> Optional[str]:
@@ -29,15 +29,23 @@ async def get_current_session(authorization: Optional[str] = Depends(get_token_f
 
 @router.post("/login", response_model=LoginResponse)
 async def login(request: LoginRequest):
+    import logging
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info(f"Login attempt for user: {request.username}")
         response = await innovasoft_service.login(request.username, request.password)
+        logger.info(f"Innovasoft response: {response}")
         
         token = response.get("token")
         userid = response.get("userid")
         username = response.get("username") or response.get("userName")
         
+        logger.info(f"Token: {token}, UserID: {userid}, Username: {username}")
+        
         if not token or not userid:
-            raise HTTPException(status_code=401, detail="Credenciales inválidas")
+            logger.warning("Invalid credentials - no token or userid")
+            return LoginResponse(token="", userid="", username="")
         
         sesiones = get_sesiones_collection()
         sesiones.insert_one({
@@ -49,10 +57,9 @@ async def login(request: LoginRequest):
         
         return LoginResponse(token=token, userid=userid, username=username)
     
-    except HTTPException:
-        raise
     except Exception as e:
-        raise HTTPException(status_code=401, detail="Credenciales inválidas. Verifica tu usuario y contraseña.")
+        logger.error(f"Login error: {e}")
+        return LoginResponse(token="", userid="", username="")
 
 
 @router.post("/register", response_model=RegistroResponse)

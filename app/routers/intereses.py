@@ -3,7 +3,7 @@ from typing import Optional, List, Dict, Any
 from app.services.database import get_sesiones_collection
 
 
-router = APIRouter(prefix="/api/Intereses", tags=["Intereses"])
+router = APIRouter(tags=["Intereses"])
 
 
 async def get_session(authorization: Optional[str] = Header(None)):

@@ -48,9 +48,7 @@ def registrar_operacion(
     })
 
 
-@router.get("/", response_model=List[Dict[str, Any]])
-@router.get("/Listado", response_model=List[Dict[str, Any]])
-@router.post("/Listado", response_model=List[Dict[str, Any]])
+@router.get("/")
 async def list_clientes(
     identificacion: str = "",
     nombre: str = "",
@@ -73,8 +71,30 @@ async def list_clientes(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{cliente_id}", response_model=Dict[str, Any])
-@router.get("/Obtener/{cliente_id}", response_model=Dict[str, Any])
+@router.get("/Listado")
+@router.post("/Listado")
+async def listado_clientes(
+    request: ClienteListadoRequest = None,
+    session: dict = Depends(get_current_session),
+):
+    try:
+        token = session.get("token")
+        
+        clientes = await innovasoft_service.list_clientes(
+            identificacion=request.identificacion if request else "",
+            nombre=request.nombre if request else "",
+            usuario_id=request.usuarioId if request else session.get("userid"),
+            token=token,
+        )
+        
+        return clientes if isinstance(clientes, list) else []
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{cliente_id}")
+@router.get("/Obtener/{cliente_id}")
 async def get_cliente(
     cliente_id: str,
     session: dict = Depends(get_current_session),
@@ -93,8 +113,7 @@ async def get_cliente(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.post("/", response_model=Dict[str, Any])
-@router.post("/Crear", response_model=Dict[str, Any])
+@router.post("/")
 async def create_cliente(
     cliente: ClienteCreate,
     session: dict = Depends(get_current_session),
@@ -116,9 +135,9 @@ async def create_cliente(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.put("/{cliente_id}", response_model=Dict[str, Any])
-@router.put("/Actualizar/{cliente_id}", response_model=Dict[str, Any])
-@router.post("/Actualizar", response_model=Dict[str, Any])
+@router.put("/{cliente_id}")
+@router.put("/Actualizar/{cliente_id}")
+@router.post("/Actualizar")
 async def update_cliente(
     cliente_id: str = None,
     cliente: ClienteUpdate = None,
@@ -167,24 +186,3 @@ async def delete_cliente(
     
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/Listado", response_model=List[Dict[str, Any]])
-async def listado_clientes(
-    request: ClienteListadoRequest,
-    session: dict = Depends(get_current_session),
-):
-    try:
-        token = session.get("token")
-        
-        clientes = await innovasoft_service.list_clientes(
-            identificacion=request.identificacion,
-            nombre=request.nombre,
-            usuario_id=request.usuarioId,
-            token=token,
-        )
-        
-        return clientes if isinstance(clientes, list) else []
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))

@@ -36,11 +36,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(authenticate.router)
-app.include_router(clientes.router, prefix="/api/Cliente", tags=["Cliente"])
-app.include_router(clientes.router, prefix="", tags=["Clientes"])
-app.include_router(intereses.router)
-app.include_router(intereses.router, prefix="")
+app.include_router(authenticate.router, prefix="/api/Authenticate")
+app.include_router(clientes.router, prefix="/api/Cliente")
+app.include_router(intereses.router, prefix="/api/Intereses")
 
 
 @app.get("/")

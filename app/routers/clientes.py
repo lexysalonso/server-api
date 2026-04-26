@@ -170,6 +170,7 @@ async def update_cliente(
 
 
 @router.delete("/{cliente_id}")
+@router.delete("/Eliminar/{cliente_id}")
 async def delete_cliente(
     cliente_id: str,
     session: dict = Depends(get_current_session),

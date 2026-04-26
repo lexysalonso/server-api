@@ -75,15 +75,25 @@ async def register(request: RegisterRequest):
         )
     
     except Exception as e:
-        error_msg = str(e)
-        if "500" in error_msg or "Internal Server Error" in error_msg:
+        error_msg = str(e).lower()
+        if "500" in error_msg or "internal" in error_msg:
             return RegistroResponse(
                 status="Error",
                 message="El usuario o correo ya existe. Intenta con otros datos."
             )
+        if "password" in error_msg or "weak" in error_msg or "required" in error_msg or "invalid" in error_msg:
+            return RegistroResponse(
+                status="Error",
+                message="La contraseña no cumple los requisitos. Mínimo 8 caracteres, con mayúsculas, minúsculas y números."
+            )
+        if "email" in error_msg or "exists" in error_msg:
+            return RegistroResponse(
+                status="Error",
+                message="El correo electrónico ya está registrado."
+            )
         return RegistroResponse(
             status="Error",
-            message="Error en el registro: " + error_msg[:100]
+            message="Error al registrar. Verifica los datos ingresados."
         )
 
 

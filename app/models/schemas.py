@@ -77,4 +77,4 @@ class ClienteResponse(ClienteBase):
 class ClienteListadoRequest(BaseModel):
     identificacion: str = ""
     nombre: str = ""
-    usuarioId: str = ""
+    usuarioId: str

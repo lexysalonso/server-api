@@ -73,12 +73,11 @@ class ClienteUpdate(BaseModel):
             "sexo": "M",
             "resennaPersonal": "Cliente preferred",
             "imagen": "https://ejemplo.com/imagen.jpg",
-            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0",
-            "usuarioId": "b5fb8aad-6aa6-41d7-b435-a6f011beb2b8"
+            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0"
         }]
     }}
     
-    id: Optional[str] = Field(None, description="ID del cliente")
+    id: str = Field(..., description="ID del cliente")
     nombre: Optional[str] = Field(None, description="Nombre del cliente")
     apellidos: Optional[str] = Field(None, description="Apellidos del cliente")
     identificacion: Optional[str] = Field(None, description="Número de identificación")
@@ -91,7 +90,6 @@ class ClienteUpdate(BaseModel):
     resennaPersonal: Optional[str] = Field(None, description="Reseña personal")
     imagen: Optional[str] = Field(None, description="URL de imagen")
     interesFK: Optional[str] = Field(None, description="ID del interés")
-    usuarioId: Optional[str] = Field(None, description="ID del usuario")
 
 
 class ClienteListadoRequest(BaseModel):

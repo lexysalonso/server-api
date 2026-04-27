@@ -89,25 +89,29 @@ async def create_cliente(cliente: ClienteCreate, session: dict = Depends(get_cur
 
 @router.post("/Actualizar")
 async def update_cliente(
-    cliente_id: str = None,
-    cliente: ClienteUpdate = None,
-    session: dict = Depends(get_current_session),
+    request: ClienteUpdate,
+    session: dict = Depends(get_current_session)
 ):
     try:
-        if not cliente_id and cliente:
-            cliente_id = cliente.id
+        cliente_id = request.id
         if not cliente_id:
             raise HTTPException(status_code=400, detail="ID de cliente requerido")
         
         token = session.get("token")
         username = session.get("username")
-        result = await innovasoft_service.update_cliente(cliente_id, {"id": cliente_id, **cliente.model_dump(exclude_none=True)} if cliente else {"id": cliente_id}, token)
+        
+        payload = request.model_dump(exclude_none=True)
+        payload["id"] = cliente_id
+        
+        result = await innovasoft_service.update_cliente(cliente_id, payload, token)
+        
         registrar_operacion("ACTUALIZAR", username, cliente_id, 200)
+        
         return result
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error al actualizar: {str(e)}")
 
 
 @router.delete("/Eliminar/{cliente_id}")

@@ -35,10 +35,9 @@ class ClienteCreate(BaseModel):
             "direccion": "San José, Costa Rica",
             "fNacimiento": "1990-01-01T00:00:00.000Z",
             "fAfiliacion": "2024-01-01T00:00:00.000Z",
-            "sexo": "Masculino",
+            "sexo": "M",
             "resennaPersonal": "Cliente preferred",
-            "imagen": "",
-            "interesFK": "id-del-interes",
+            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0",
             "usuarioId": "b5fb8aad-6aa6-41d7-b435-a6f011beb2b8"
         }]
     }}
@@ -51,9 +50,8 @@ class ClienteCreate(BaseModel):
     direccion: Optional[str] = Field(None, description="Dirección")
     fNacimiento: Optional[str] = Field(None, description="Fecha de nacimiento")
     fAfiliacion: Optional[str] = Field(None, description="Fecha de afiliación")
-    sexo: Optional[str] = Field(None, description="Sexo: Masculino/Femenino")
+    sexo: Optional[str] = Field(None, description="Sexo: M/F")
     resennaPersonal: Optional[str] = Field(None, description="Reseña personal")
-    imagen: Optional[str] = Field(None, description="URL de imagen")
     interesFK: Optional[str] = Field(None, description="ID del interés")
     usuarioId: str = Field(..., description="ID del usuario")
 
@@ -70,10 +68,9 @@ class ClienteUpdate(BaseModel):
             "direccion": "San José, Costa Rica",
             "fNacimiento": "1990-01-01T00:00:00.000Z",
             "fAfiliacion": "2024-01-01T00:00:00.000Z",
-            "sexo": "Masculino",
+            "sexo": "M",
             "resennaPersonal": "Cliente preferred",
-            "imagen": "",
-            "interesFK": "id-del-interes"
+            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0"
         }]
     }}
     
@@ -86,9 +83,9 @@ class ClienteUpdate(BaseModel):
     direccion: Optional[str] = Field(None, description="Dirección")
     fNacimiento: Optional[str] = Field(None, description="Fecha de nacimiento")
     fAfiliacion: Optional[str] = Field(None, description="Fecha de afiliación")
-    sexo: Optional[str] = Field(None, description="Sexo: Masculino/Femenino")
+    sexo: Optional[str] = Field(None, description="Sexo: M/F")
     resennaPersonal: Optional[str] = Field(None, description="Reseña personal")
-    intereses: Optional[List[str]] = Field(None, description="Lista de intereses")
+    interesFK: Optional[str] = Field(None, description="ID del interés")
 
 
 class ClienteListadoRequest(BaseModel):

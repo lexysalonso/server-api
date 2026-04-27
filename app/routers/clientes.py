@@ -40,16 +40,16 @@ def registrar_operacion(accion: str, username: str, cliente_id: str, resultado: 
 
 @router.post("/Listado")
 async def listado_clientes(
-    request: ClienteListadoRequest = None,
+    request: ClienteListadoRequest,
     session: dict = Depends(get_current_session)
 ):
     try:
         token = session.get("token")
         userid = session.get("userid")
         
-        identificacion = request.identificacion if request and request.identificacion else ""
-        nombre = request.nombre if request and request.nombre else ""
-        usuarioId = request.usuarioId if request and request.usuarioId else userid
+        identificacion = request.identificacion if request.identificacion else ""
+        nombre = request.nombre if request.nombre else ""
+        usuarioId = request.usuarioId if request.usuarioId else userid
         
         clientes = await innovasoft_service.list_clientes(
             identificacion,

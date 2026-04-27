@@ -81,3 +81,14 @@ async def register(request: RegisterRequest):
             status="Error",
             message="Error al registrar. Verifica los datos."
         )
+
+
+@router.post("/logout")
+async def logout(authorization: Optional[str] = Header(None)):
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization[7:]
+        sesiones = get_sesiones_collection()
+        result = sesiones.delete_many({"token": token})
+        return {"message": "Sesión cerrada exitosamente"}
+    
+    return {"message": "No había sesión activa"}

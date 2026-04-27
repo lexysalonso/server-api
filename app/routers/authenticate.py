@@ -29,14 +29,21 @@ async def get_current_session(authorization: Optional[str] = Depends(get_token_f
 
 @router.post("/login", response_model=LoginResponse)
 async def login(request: LoginRequest):
+    import logging
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info(f"Login attempt: {request.username}")
         response = await innovasoft_service.login(request.username, request.password)
+        logger.info(f"Innovasoft response: {response}")
         
         token = response.get("token")
         userid = response.get("userid")
         username = response.get("username") or response.get("userName")
+        logger.info(f"Parsed - token: {token}, userid: {userid}, username: {username}")
         
         if not token or not userid:
+            logger.warning("Invalid credentials - no token or userid")
             raise HTTPException(status_code=401, detail="Credenciales inválidas")
         
         sesiones = get_sesiones_collection()
@@ -46,12 +53,14 @@ async def login(request: LoginRequest):
             "username": username,
             "login_timestamp": datetime.utcnow().isoformat(),
         })
+        logger.info("Session saved to MongoDB")
         
         return LoginResponse(token=token, userid=userid, username=username)
     
     except HTTPException:
         raise
     except Exception as e:
+        logger.error(f"Login error: {e}")
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
 

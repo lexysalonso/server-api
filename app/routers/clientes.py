@@ -39,18 +39,27 @@ def registrar_operacion(accion: str, username: str, cliente_id: str, resultado: 
 
 
 @router.post("/Listado")
-async def listado_clientes(request: ClienteListadoRequest = None, session: dict = Depends(get_current_session)):
+async def listado_clientes(
+    request: ClienteListadoRequest = None,
+    session: dict = Depends(get_current_session)
+):
     try:
         token = session.get("token")
+        userid = session.get("userid")
+        
+        identificacion = request.identificacion if request and request.identificacion else ""
+        nombre = request.nombre if request and request.nombre else ""
+        usuarioId = request.usuarioId if request and request.usuarioId else userid
+        
         clientes = await innovasoft_service.list_clientes(
-            request.identificacion if request else "",
-            request.nombre if request else "",
-            request.usuarioId if request else session.get("userid"),
+            identificacion,
+            nombre,
+            usuarioId,
             token,
         )
         return clientes if isinstance(clientes, list) else []
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error al listar clientes: {str(e)}")
 
 
 @router.get("/Obtener/{cliente_id}")

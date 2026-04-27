@@ -41,13 +41,18 @@ def custom_openapi():
         "BearerAuth": {
             "type": "http",
             "scheme": "bearer",
-            "description": 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"'
+            "description": "JWT Authorization. Click Authorize button to enter token."
         }
     }
     for path in openapi_schema["paths"]:
         for method in openapi_schema["paths"][path]:
             if method in ["get", "post", "put", "delete"]:
                 openapi_schema["paths"][path][method]["security"] = [{"BearerAuth": []}]
+                # Remove 'authorization' from parameters to avoid confusion
+                params = openapi_schema["paths"][path][method].get("parameters", [])
+                openapi_schema["paths"][path][method]["parameters"] = [
+                    p for p in params if p.get("name") != "authorization"
+                ]
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 

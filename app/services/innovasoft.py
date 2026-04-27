@@ -108,9 +108,21 @@ class InnovasoftService:
     async def delete_cliente(self, cliente_id: str, token: str) -> Dict[str, Any]:
         client = await get_http_client()
         headers = {"Authorization": f"Bearer {token}"}
-        response = await client.delete(f"/api/Cliente/Eliminar/{cliente_id}", headers=headers)
-        response.raise_for_status()
-        return response.json()
+        payload = {"id": cliente_id}
+        
+        try:
+            response = await client.post("/api/Cliente/Eliminar", json=payload, headers=headers)
+            response.raise_for_status()
+        except Exception:
+            response = await client.delete(f"/api/Cliente/Eliminar/{cliente_id}", headers=headers)
+            response.raise_for_status()
+        
+        if response.status_code in [204, 200] or not response.text:
+            return {"success": True, "message": "Cliente eliminado exitosamente"}
+        try:
+            return response.json()
+        except:
+            return {"success": True}
 
 
 innovasoft_service = InnovasoftService()

@@ -124,8 +124,13 @@ async def delete_cliente(
     try:
         token = session.get("token")
         username = session.get("username")
-        await innovasoft_service.delete_cliente(cliente_id, token)
+        result = await innovasoft_service.delete_cliente(cliente_id, token)
         registrar_operacion("ELIMINAR", username, cliente_id, 200)
-        return {"message": "Cliente eliminado exitosamente"}
+        return {"success": True, "message": "Cliente eliminado exitosamente", "clienteId": cliente_id}
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        error_msg = str(e)
+        if "405" in error_msg or "Method Not Allowed" in error_msg:
+            raise HTTPException(status_code=400, detail="Error: El servidor externo no permite eliminar este cliente")
+        raise HTTPException(status_code=400, detail=f"Error al eliminar cliente: {error_msg}")

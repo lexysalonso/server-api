@@ -37,6 +37,7 @@ class ClienteCreate(BaseModel):
             "fAfiliacion": "2024-01-01T00:00:00.000Z",
             "sexo": "M",
             "resennaPersonal": "Cliente preferred",
+            "imagen": "https://ejemplo.com/imagen.jpg",
             "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0",
             "usuarioId": "b5fb8aad-6aa6-41d7-b435-a6f011beb2b8"
         }]
@@ -52,6 +53,7 @@ class ClienteCreate(BaseModel):
     fAfiliacion: Optional[str] = Field(None, description="Fecha de afiliación")
     sexo: Optional[str] = Field(None, description="Sexo: M/F")
     resennaPersonal: Optional[str] = Field(None, description="Reseña personal")
+    imagen: Optional[str] = Field(None, description="URL de imagen")
     interesFK: Optional[str] = Field(None, description="ID del interés")
     usuarioId: str = Field(..., description="ID del usuario")
 
@@ -70,11 +72,13 @@ class ClienteUpdate(BaseModel):
             "fAfiliacion": "2024-01-01T00:00:00.000Z",
             "sexo": "M",
             "resennaPersonal": "Cliente preferred",
-            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0"
+            "imagen": "https://ejemplo.com/imagen.jpg",
+            "interesFK": "47c53f03-87fb-4bc4-8426-d17ef67445e0",
+            "usuarioId": "b5fb8aad-6aa6-41d7-b435-a6f011beb2b8"
         }]
     }}
     
-    id: Optional[str] = Field(None, description="ID del cliente (obligatorio para actualizar)")
+    id: Optional[str] = Field(None, description="ID del cliente")
     nombre: Optional[str] = Field(None, description="Nombre del cliente")
     apellidos: Optional[str] = Field(None, description="Apellidos del cliente")
     identificacion: Optional[str] = Field(None, description="Número de identificación")
@@ -85,7 +89,9 @@ class ClienteUpdate(BaseModel):
     fAfiliacion: Optional[str] = Field(None, description="Fecha de afiliación")
     sexo: Optional[str] = Field(None, description="Sexo: M/F")
     resennaPersonal: Optional[str] = Field(None, description="Reseña personal")
+    imagen: Optional[str] = Field(None, description="URL de imagen")
     interesFK: Optional[str] = Field(None, description="ID del interés")
+    usuarioId: Optional[str] = Field(None, description="ID del usuario")
 
 
 class ClienteListadoRequest(BaseModel):

@@ -37,7 +37,7 @@ async def login(request: LoginRequest):
         username = response.get("username") or response.get("userName")
         
         if not token or not userid:
-            return LoginResponse(token="", userid="", username="")
+            raise HTTPException(status_code=401, detail="Credenciales inválidas")
         
         sesiones = get_sesiones_collection()
         sesiones.insert_one({
@@ -49,8 +49,10 @@ async def login(request: LoginRequest):
         
         return LoginResponse(token=token, userid=userid, username=username)
     
+    except HTTPException:
+        raise
     except Exception as e:
-        return LoginResponse(token="", userid="", username="")
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
 
 @router.post("/register", response_model=RegistroResponse)

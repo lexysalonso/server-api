@@ -59,7 +59,7 @@ class ClienteCreate(BaseModel):
 class ClienteUpdate(BaseModel):
     model_config = {"json_schema_extra": {
         "examples": [{
-            "id": "id-del-cliente",
+            "id": "156f22a3-82a9-4c5c-b27f-0466a74390ba",
             "nombre": "Juan Actualizado",
             "apellidos": "Pérez Gómez",
             "identificacion": "12345678901",
@@ -74,7 +74,7 @@ class ClienteUpdate(BaseModel):
         }]
     }}
     
-    id: Optional[str] = Field(None, description="ID del cliente")
+    id: Optional[str] = Field(None, description="ID del cliente (obligatorio para actualizar)")
     nombre: Optional[str] = Field(None, description="Nombre del cliente")
     apellidos: Optional[str] = Field(None, description="Apellidos del cliente")
     identificacion: Optional[str] = Field(None, description="Número de identificación")

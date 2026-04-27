@@ -97,10 +97,10 @@ class ClienteListadoRequest(BaseModel):
         "examples": [{
             "identificacion": "",
             "nombre": "",
-            "usuarioId": "b5fb8aad-6aa6-41d7-b435-a6f011beb2b8"
+            "usuarioId": "" 
         }]
     }}
     
     identificacion: str = Field("", description="Filtrar por identificación")
     nombre: str = Field("", description="Filtrar por nombre")
-    usuarioId: str = Field(..., description="ID del usuario")
+    usuarioId: Optional[str] = Field(None, description="ID del usuario (se usa el de sesión si está vacío)")

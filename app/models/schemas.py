@@ -31,7 +31,6 @@ class RegistroResponse(BaseModel):
 
 
 class ClienteBase(BaseModel):
-    model_config = {"extra": "allow", "use_enum_values": False}
     
     nombre: str = Field(..., min_length=1, max_length=100)
     apellidos: str = Field(..., min_length=1, max_length=150)
@@ -46,12 +45,12 @@ class ClienteBase(BaseModel):
     intereses: Optional[List[str]] = None
 
 
-class ClienteCreate(ClienteBase):
-    model_config = {"extra": "allow"}
+class ClienteCreate(BaseModel):
+    nombre: str
 
 
 class ClienteUpdate(BaseModel):
-    model_config = {"extra": "allow"}
+    nombre: Optional[str] = None
     
     nombre: Optional[str] = Field(None, min_length=1, max_length=100)
     apellidos: Optional[str] = Field(None, min_length=1, max_length=150)
@@ -76,8 +75,6 @@ class ClienteResponse(ClienteBase):
 
 
 class ClienteListadoRequest(BaseModel):
-    model_config = {"extra": "allow"}
-    
     identificacion: str = ""
     nombre: str = ""
     usuarioId: str = ""

@@ -99,9 +99,11 @@ async def update_cliente(
         
         token = session.get("token")
         username = session.get("username")
+        userid = session.get("userid")
         
         payload = request.model_dump(exclude_none=True)
         payload["id"] = cliente_id
+        payload["usuarioId"] = userid
         
         result = await innovasoft_service.update_cliente(cliente_id, payload, token)
         
